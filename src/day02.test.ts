@@ -20,7 +20,7 @@ function part2(data: any) {
 }
 
 describe("day02", async () => {
-  const input = await Bun.file("src/day01.txt").text();
+  const input = await Bun.file("src/day02.txt").text();
 
   it("should solve part 1 (example 1)", () => {
     const result = part1(parseInput(example1));

@@ -34,6 +34,7 @@ describe("day01", async () => {
     let answer = 0;
     data.forEach((parts) => {
       const nr = parseInt(parts[2] as string) * (parts[1] === "R" ? +1 : -1);
+      const startDial = dial;
       dial += nr;
 
       if (dial === 0) {
@@ -44,15 +45,20 @@ describe("day01", async () => {
         dial %= 100;
       }
       else if (dial < 0) {
-        const fullTurns = Math.floor(Math.abs(dial - 100) / 100);
+        const offset = startDial === 0 ? 100 : 0;
+        const fullTurns = Math.floor(Math.abs(dial - offset) / 100);
         answer += fullTurns;
         dial += fullTurns * 100;
-      }      
+      }
+ 
+      console.log(" - The dial is rotated", parts[1], parts[2], "to point at", dial, "   - answer = ", answer)
     }); 
     expect(answer).not.toEqual(2097); // Guess 1
     expect(answer).not.toEqual(5154); // Guess 2
     expect(answer).not.toEqual(5944); // Guess 3
-    expect(answer).not.toEqual(6350); // Guess 4    
+    expect(answer).not.toEqual(6350); // Guess 4
+    expect(answer).not.toEqual(5627); // Guess 5
+    
     expect(answer).toEqual(-1);
   });
 });

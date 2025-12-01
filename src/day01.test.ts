@@ -14,11 +14,19 @@ describe("day01", async () => {
   const data = input
     .split(/\r?\n/gi)
     .filter((x) => !!x)
-    .map((x) => x);
+    .map((x) => x.split(/(\w)(\d+)/gi));
 
   it("should sovle part 1", () => {
     const result = part1(data);
-    expect(result).toEqual(-1);
+    let dial = 50;
+    let answer = 0;
+    data.forEach((parts) => {
+      const nr = parseInt(parts[2] as string);
+      dial += parts[1] === "R" ? -nr : +nr;
+      dial = (dial + 100) % 100;
+      if (dial === 0) answer++;
+    });
+    expect(answer).toEqual(-1);
   });
 
   // it("should sovle part 2", () => {

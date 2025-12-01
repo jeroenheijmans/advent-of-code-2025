@@ -26,34 +26,32 @@ describe("day01", async () => {
       dial = (dial + 100) % 100;
       if (dial === 0) answer++;
     });
-    expect(answer).toEqual(-1);
+    expect(answer).toEqual(964);
   }); 
 
   it("should sovle part 2", () => {
     let dial = 50;
     let answer = 0;
     data.forEach((parts) => {
-      const nr = parseInt(parts[2] as string);
-      const startDial = dial;
-      dial += parts[1] === "L" ? -nr : +nr;
-      let x = "-";
-      if (startDial !== 0 && dial > 100) {
-        answer += Math.floor(dial / 100);
-        x = "a";
-      }
-      else if (startDial !== 0 && dial < 0) {
-        answer += Math.floor((Math.abs(dial - 100)) / 100);
-        x = "b";
-      }
-      else if (startDial === 0) {
+      const nr = parseInt(parts[2] as string) * (parts[1] === "R" ? +1 : -1);
+      dial += nr;
+
+      if (dial === 0) {
         answer++;
-        x = "c";
       }
-      dial = (dial + 100) % 100;
-      console.log(answer, x, startDial, "=>", dial, parts[1], parts[2]);
+      else if (dial > 100) {
+        answer += Math.floor(dial / 100);
+        dial %= 100;
+      }
+      else if (dial < 0) {
+        const fullTurns = Math.floor(Math.abs(dial - 100) / 100);
+        answer += fullTurns;
+        dial += fullTurns * 100;
+      }      
     }); 
-    expect(answer).toEqual(-1);
     expect(answer).not.toEqual(2097); // Guess 1
     expect(answer).not.toEqual(5154); // Guess 2
+    expect(answer).not.toEqual(5944); // Guess 3
+    expect(answer).toEqual(-1);
   });
 });

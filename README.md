@@ -21,7 +21,7 @@ bun test --watch day01
 
 Here's what I learned (or noticed) each day.
 
-1. TODO
+1. Edge cases hurt.
 2. TODO
 3. TODO
 4. TODO

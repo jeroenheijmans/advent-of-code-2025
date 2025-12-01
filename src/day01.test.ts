@@ -27,18 +27,33 @@ describe("day01", async () => {
       if (dial === 0) answer++;
     });
     expect(answer).toEqual(-1);
-  });
+  }); 
 
   it("should sovle part 2", () => {
-    const result = part1(data);
     let dial = 50;
     let answer = 0;
     data.forEach((parts) => {
       const nr = parseInt(parts[2] as string);
-      dial += parts[1] === "R" ? -nr : +nr;
-      if (dial < 0 || dial > 100) answer++;
+      const startDial = dial;
+      dial += parts[1] === "L" ? -nr : +nr;
+      let x = "-";
+      if (startDial !== 0 && dial > 100) {
+        answer += Math.floor(dial / 100);
+        x = "a";
+      }
+      else if (startDial !== 0 && dial < 0) {
+        answer += Math.floor((Math.abs(dial - 100)) / 100);
+        x = "b";
+      }
+      else if (startDial === 0) {
+        answer++;
+        x = "c";
+      }
       dial = (dial + 100) % 100;
-    });
+      console.log(answer, x, startDial, "=>", dial, parts[1], parts[2]);
+    }); 
     expect(answer).toEqual(-1);
+    expect(answer).not.toEqual(2097); // Guess 1
+    expect(answer).not.toEqual(5154); // Guess 2
   });
 });

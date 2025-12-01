@@ -29,8 +29,16 @@ describe("day01", async () => {
     expect(answer).toEqual(-1);
   });
 
-  // it("should sovle part 2", () => {
-  //   const result = part1(data);
-  //   expect(result).toEqual(-1);
-  // });
+  it("should sovle part 2", () => {
+    const result = part1(data);
+    let dial = 50;
+    let answer = 0;
+    data.forEach((parts) => {
+      const nr = parseInt(parts[2] as string);
+      dial += parts[1] === "R" ? -nr : +nr;
+      if (dial < 0 || dial > 100) answer++;
+      dial = (dial + 100) % 100;
+    });
+    expect(answer).toEqual(-1);
+  });
 });

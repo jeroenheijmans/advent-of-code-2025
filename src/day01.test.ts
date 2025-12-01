@@ -39,7 +39,7 @@ describe("day01", async () => {
       if (dial === 0) {
         answer++;
       }
-      else if (dial > 100) {
+      else if (dial >= 100) {
         answer += Math.floor(dial / 100);
         dial %= 100;
       }
@@ -52,6 +52,7 @@ describe("day01", async () => {
     expect(answer).not.toEqual(2097); // Guess 1
     expect(answer).not.toEqual(5154); // Guess 2
     expect(answer).not.toEqual(5944); // Guess 3
+    expect(answer).not.toEqual(6350); // Guess 4    
     expect(answer).toEqual(-1);
   });
 });

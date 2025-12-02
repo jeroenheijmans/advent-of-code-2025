@@ -4,7 +4,7 @@ const example1 = `11-22,95-115,998-1012,1188511880-1188511890,222220-222224,
 1698522-1698528,446443-446449,38593856-38593862,565653-565659,
 824824821-824824827,2121212118-2121212124`;
 
-function parseInput(input: string){
+function parseInput(input: string) {
   return input
     .split(",")
     .filter((x) => !!x)
@@ -20,12 +20,12 @@ function* getFactors(n: number): IterableIterator<number> {
 
 const lenToFactors = [...Array(33)].map((_, i) => [...getFactors(i)]);
 
-function isInvalid(nr: number, isPart2 = false) {
+function isInvalid(nr: number, part = 1) {
   const str = nr.toString();
   const len = str.length;
   for (const factor of lenToFactors[len]!) {
     const multiplier = len / factor;
-    if (!isPart2 && multiplier !== 2) continue;
+    if (part === 1 && multiplier !== 2) continue;
     const snippet = str.substring(0, factor);
     const expected = snippet.repeat(multiplier);
     if (str === expected) return true;
@@ -41,7 +41,7 @@ function part1(data: [number, number][]) {
         answer += i;
       }
     }
-  })
+  });
   return answer;
 }
 
@@ -49,11 +49,11 @@ function part2(data: [number, number][]) {
   let answer = 0;
   data.forEach(([from, to]) => {
     for (let i = from; i <= to; i++) {
-      if (isInvalid(i, true)) {
+      if (isInvalid(i, 2)) {
         answer += i;
       }
     }
-  })
+  });
   return answer;
 }
 

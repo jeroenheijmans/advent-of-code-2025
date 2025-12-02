@@ -20,12 +20,12 @@ function* getFactors(n: number): IterableIterator<number> {
 
 const lenToFactors = [...Array(33)].map((_, i) => [...getFactors(i)]);
 
-function isInvalid(nr: number) {
+function isInvalid(nr: number, isPart2 = false) {
   const str = nr.toString();
   const len = str.length;
   for (const factor of lenToFactors[len]!) {
     const multiplier = len / factor;
-    if (multiplier !== 2) continue; // probably part 2 will change this?
+    if (!isPart2 && multiplier !== 2) continue;
     const snippet = str.substring(0, factor);
     const expected = snippet.repeat(multiplier);
     if (str === expected) return true;
@@ -34,21 +34,28 @@ function isInvalid(nr: number) {
 }
 
 function part1(data: [number, number][]) {
-    let answer = 0;
-    data.forEach(([from, to]) => {
-      for (let i = from; i <= to; i++) {
-        if (isInvalid(i)) {
-          answer += i;
-        }
+  let answer = 0;
+  data.forEach(([from, to]) => {
+    for (let i = from; i <= to; i++) {
+      if (isInvalid(i)) {
+        answer += i;
       }
-    })
-    return answer;
+    }
+  })
+  return answer;
 }
 
-function part2(data: any) {
-    let answer = 0;
-    return answer;
-} 
+function part2(data: [number, number][]) {
+  let answer = 0;
+  data.forEach(([from, to]) => {
+    for (let i = from; i <= to; i++) {
+      if (isInvalid(i, true)) {
+        answer += i;
+      }
+    }
+  })
+  return answer;
+}
 
 describe("day02", async () => {
   const input = await Bun.file("src/day02.txt").text();
@@ -60,16 +67,16 @@ describe("day02", async () => {
 
   it("should solve part 1", () => {
     const result = part1(parseInput(input));
-    expect(result).toEqual(-1);
+    expect(result).toEqual(24747430309);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 1)", () => {
+    const result = part2(parseInput(example1));
+    expect(result).toEqual(4174379265);
+  });
 
-  // it("should solve part 2", () => {
-  //   const result = part2(parseInput(input));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2", () => {
+    const result = part2(parseInput(input));
+    expect(result).toEqual(30962646823);
+  });
 }); 

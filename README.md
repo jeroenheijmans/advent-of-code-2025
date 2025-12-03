@@ -23,7 +23,7 @@ Here's what I learned (or noticed) each day.
 
 1. Edge cases hurt.
 2. Save "oversolved" solutions for later.
-3. TODO
+3. AoC puzzle solving can be soothing too.
 4. TODO
 5. TODO
 6. TODO

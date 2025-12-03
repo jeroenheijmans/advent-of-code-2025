@@ -33,8 +33,25 @@ function part1(data: string[]) {
     return answer;
 }
 
-function part2(data: any) {
+function part2(data: string[]) {
     let answer = 0;
+    data.forEach(line => {
+      let digits = 12;
+      let combo = "";
+      let lastPos = -1;
+
+      do {
+        let pos = line.length - digits;
+        for (let i = pos - 1; i > lastPos; i--) {
+          if (line[i]! >= line[pos]!) pos = i;
+        }
+        lastPos = pos;
+        combo += line[pos]!;
+      } while (--digits > 0);
+
+      const joltage = parseInt(combo);
+      answer += joltage;
+    })
     return answer;
 }
 
@@ -51,13 +68,13 @@ describe(`${day}`, async () => {
     expect(result).toEqual(17311);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 1)", () => {
+    const result = part2(parseInput(example1));
+    expect(result).toEqual(3121910778619);
+  });
 
-  // it("should solve part 2", () => {
-  //   const result = part2(parseInput(input));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2", () => {
+    const result = part2(parseInput(input));
+    expect(result).toEqual(171419245422055);
+  });
 }); 

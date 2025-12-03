@@ -19,20 +19,18 @@ function solveFor(data: string[], substringSize = 2) {
     let answer = 0;
     data.forEach(line => {
       let digits = substringSize;
-      let combo = "";
-      let lastPos = -1;
-
+      let joltageText = "";
+      let previousPosition = -1;
       do {
-        let pos = line.length - digits;
-        for (let i = pos - 1; i > lastPos; i--) {
-          if (line[i]! >= line[pos]!) pos = i;
+        let position = line.length - digits;
+        for (let i = position - 1; i > previousPosition; i--) {
+          if (line[i]! >= line[position]!) position = i;
         }
-        lastPos = pos;
-        combo += line[pos]!;
+        previousPosition = position;
+        joltageText += line[position]!;
       } while (--digits > 0);
 
-      const joltage = parseInt(combo);
-      answer += joltage;
+      answer += parseInt(joltageText);
     })
     return answer;
 }

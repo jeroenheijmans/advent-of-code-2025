@@ -17,6 +17,7 @@ const example1 = `
 type Point = {key: string, x: number, y: number, c: string};
 
 function parseInput(input: string) {
+  console.log("Parse input");
   return input
     .split(/\r?\n/gi)
     .filter((x) => !!x)
@@ -37,7 +38,10 @@ function getNeighbors(p: Point, data: { [key: string]: Point }) {
 }
 
 function part1(data: Point[]) {
-    const map = data.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {});
+    const map = data.reduce((prev, curr) => {
+      prev[curr.key] = curr;
+      return prev;
+    }, {} as { [key: string]: Point });
     return data
       .filter(p => p.c === "@")
       .map(p => getNeighbors(p, map).filter(n => n.c === "@").length)
@@ -46,8 +50,12 @@ function part1(data: Point[]) {
 }
 
 function part2(data: Point[]) {
-    const map = data.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {}) as { [key: string]: Point }; 
+    const map = data.reduce((prev, curr) => {
+      prev[curr.key] = curr;
+      return prev;
+    }, {} as { [key: string]: Point });
     let answer = 0;
+    let i = 1;
     while (true) {
       let removed = false;
 

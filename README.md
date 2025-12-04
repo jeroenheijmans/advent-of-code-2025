@@ -24,7 +24,7 @@ Here's what I learned (or noticed) each day.
 1. Edge cases hurt.
 2. Save "oversolved" solutions for later.
 3. AoC puzzle solving can be soothing too.
-4. TODO
+4. Spread operators can be slow!
 5. TODO
 6. TODO
 7. TODO

@@ -45,8 +45,25 @@ function part1(data: Point[]) {
       .length;
 }
 
-function part2(data: any) {
+function part2(data: Point[]) {
+    const map = data.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {}) as { [key: string]: Point }; 
     let answer = 0;
+    while (true) {
+      let removed = false;
+
+      const candidates = data
+        .filter(p => p.c === "@")
+        .filter(p => getNeighbors(p, map).filter(n => n.c === "@").length < 4);
+      
+      if (candidates.length > 0) {
+        removed = true;
+        candidates.forEach(c => delete map[c.key]);
+        data = data.filter(p => !candidates.find(p2 => p2 === p));
+        answer += candidates.length;
+      }
+
+      if (!removed) break;
+    }
     return answer;
 }
 
@@ -63,13 +80,13 @@ describe(`${day}`, async () => {
     expect(result).toEqual(1384);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 1)", () => {
+    const result = part2(parseInput(example1));
+    expect(result).toEqual(43);
+  });
 
-  // it("should solve part 2", () => {
-  //   const result = part2(parseInput(input));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2", () => {
+    const result = part2(parseInput(input));
+    expect(result).toEqual(8013);
+  });
 }); 

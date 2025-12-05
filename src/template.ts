@@ -12,13 +12,13 @@ function parseInput(input: string) {
 }
 
 function part1(data: any) {
-    let answer = 0;
-    return answer;
+  let answer = 0;
+  return answer;
 }
 
 function part2(data: any) {
-    let answer = 0;
-    return answer;
+  let answer = 0;
+  return answer;
 }
 
 describe(`${day}`, async () => {
@@ -43,4 +43,4 @@ describe(`${day}`, async () => {
   //   const result = part2(parseInput(input));
   //   expect(result).toEqual(-1);
   // });
-}); 
+});

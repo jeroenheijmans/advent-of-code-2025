@@ -15,6 +15,16 @@ const example1 = `
 17
 32`;
 
+const example2 = `
+1-2
+2-6
+3-4
+99-100
+
+1`;
+
+const example2Answer = 8
+
 function parseInput(input: string) {
   const [ranges, ids] = input.split(/\r?\n\r?\n/gi);
   return {
@@ -50,6 +60,8 @@ function isOverlapping(r1: number[], r2: number[]) {
   const [from2, to2] = r2;
   if (from2! >= from1! && from2! <= to1!) return true;
   if (to2! >= from1! && to2! <= to1!) return true;
+  if (from1! >= from2! && from1! <= to2!) return true;
+  if (to1! >= from2! && to1! <= to2!) return true;
   return false;
 }
 
@@ -59,7 +71,7 @@ function mergeRanges(r1: number[], r2: number[]) {
   return [
     Math.min(from1!, to1!, from2!, to2!),
     Math.max(from1!, to1!, from2!, to2!),
-  ]
+  ];
 }
 
 function part2(data: Input) {
@@ -71,7 +83,6 @@ function part2(data: Input) {
         if (isOverlapping(ranges[i]!, ranges[j]!)) {
           hasDoneMerge = true;
           const merged = mergeRanges(ranges[i]!, ranges[j]!);
-          // console.log("Merging!", ranges[i], ranges[j], "becomes", merged);
           ranges = [
             ...ranges.filter(r => r !== ranges[i] && r !== ranges[j]),
             merged
@@ -104,9 +115,14 @@ describe(`${day}`, async () => {
     expect(result).toEqual(14);
   });
 
+  it("should solve part 2 (example 2)", () => {
+    const result = part2(parseInput(example2));
+    expect(result).toEqual(example2Answer);
+  });
+
   it("should solve part 2", () => {
     const result = part2(parseInput(input));
     expect(result).toBeLessThan(352347720583355);
-    expect(result).toEqual(-1);
+    expect(result).toEqual(347338785050515);
   });
 });

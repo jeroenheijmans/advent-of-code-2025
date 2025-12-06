@@ -20,15 +20,16 @@ function part1(data: string[]) {
   const cols = [];
 
   for (let c = 0; c < lines[0]!.length; c++) {
+    const op = operators[c]!;
     cols.push({
-      op: operators[c]!,
       base: operators[c] === "+" ? 0 : 1,
+      reducer: (a: number, b: number) => op === "+" ? a + b : a * b,
       nrs: lines.map(l => parseInt(l[c]!))!,
     });
   }
 
   return cols
-    .map(col => col.nrs.reduce((nr, acc) => col.op === "+" ? nr + acc : nr * acc, col.base))
+    .map(col => col.nrs.reduce(col.reducer, col.base))
     .reduce((a, b) => a + b, 0);
 }
 
@@ -40,27 +41,18 @@ function part2(lines: string[]) {
 
   for (let c = 0; c < lines[0]!.length; c++) {
     if (operatorLine[c] !== " ") {
-      // console.log("Bumping by", extra)
       answer += extra;
       op = operatorLine[c]!;
       extra = op === "+" ? 0 : 1;
     }
-    
-    let next = "";
-    lines.forEach(line => {
-      if (line[c] !== " ") next = next + line[c];
-    });
+
+    let next = lines.map(l => l[c]).join("").replaceAll(" ", "");
     if (next === "") continue;
-    let nr = parseInt(next);
-
-    // console.log("Col", c, "doing", extra, op, nr)
-
-    if (op === "+") extra += nr;
-    if (op === "*") extra *= nr;
+    if (op === "+") extra += parseInt(next);
+    if (op === "*") extra *= parseInt(next);
   }
-  answer += extra;
   
-  return answer;
+  return answer + extra;
 }
 
 describe(`${day}`, async () => {

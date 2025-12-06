@@ -26,7 +26,7 @@ Here's what I learned (or noticed) each day.
 3. AoC puzzle solving can be soothing too.
 4. Spread operators can be slow!
 5. Distractions kill focus.
-6. TODO
+6. Sometimes things are just different.
 7. TODO
 8. TODO
 9. TODO

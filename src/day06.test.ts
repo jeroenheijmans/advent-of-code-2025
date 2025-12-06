@@ -9,11 +9,13 @@ const example1 = `
 *   +   *   +  `;
 
 function parseInput(input: string) {
-  const lines = input
+  return input
     .split(/\r?\n/gi)
     .filter((x) => !!x)
     .map((x) => x.split(/\s+/gi).filter(x => !!x));
-  
+}
+
+function part1(lines: string[][]) {
   const operators = lines.pop()!;
   const cols = [];
 
@@ -25,22 +27,12 @@ function parseInput(input: string) {
     });
   }
 
-  return cols;
-}
-
-type Data = {
-  op: string;
-  base: number;
-  nrs: number[];
-}
-
-function part1(data: Data[]) {
-  return data
+  return cols
     .map(col => col.nrs.reduce((nr, acc) => col.op === "+" ? nr + acc : nr * acc, col.base))
     .reduce((a, b) => a + b, 0);
 }
 
-function part2(data: Data[]) {
+function part2(lines: string[][]) {
   let answer = 0;
   return answer;
 }
@@ -58,10 +50,10 @@ describe(`${day}`, async () => {
     expect(result).toEqual(5877594983578);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 1)", () => {
+    const result = part2(parseInput(example1));
+    expect(result).toEqual(3263827);
+  });
 
   // it("should solve part 2", () => {
   //   const result = part2(parseInput(input));

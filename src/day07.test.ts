@@ -55,32 +55,29 @@ function part1(data: string[][]) {
 }
 
 function part2(data: string[][]) {
-  let answer = 0;
-
-  let lines = data
-    .map((line, y) => line.map((c, x) => ({ x, y, c })));
-
+  let lines = data.map((line, y) => line.map((c, x) => ({ x, y, c })));
   const worlds = lines.map(line => line.map((entry) => entry.c === "S" ? 1 : 0));
+
+  // Add summary line to be filled:
   worlds.push(worlds[0]!.map(() => 0));
+
   let y = 0;
 
   do {
     for (let x = 0; x < lines[0]!.length; x++) {
-      const paths = worlds[y][x];
+      const paths = worlds[y]![x]!;
       if (paths === 0) continue;
 
       if (lines[y] && lines[y]![x]?.c === "^") {
-        worlds[y + 1][x - 1] += paths;
-        worlds[y + 1][x + 1] += paths;
-        answer++;
+        worlds[y + 1]![x - 1]! += paths;
+        worlds[y + 1]![x + 1]! += paths;
       } else {
-        worlds[y + 1][x] += paths;
+        worlds[y + 1]![x]! += paths;
       }
     }
   } while (++y < lines.length);
 
-
-  return worlds.pop()?.reduce((a, b) => a + b, 0);
+  return worlds.pop()!.reduce((a, b) => a + b, 0 as number);
 }
 
 describe(`${day}`, async () => {

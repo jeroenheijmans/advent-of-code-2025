@@ -27,7 +27,7 @@ Here's what I learned (or noticed) each day.
 4. Spread operators can be slow!
 5. Distractions kill focus.
 6. Sometimes things are just different.
-7. TODO
+7. Experience with **chess** being useful. Nice!
 8. TODO
 9. TODO
 10. TODO

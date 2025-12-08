@@ -41,24 +41,25 @@ type Point = {
   coords: [number, number, number];
 };
 
-const distance = (a: Point, b: Point): number => 
+const getDistanceBetween = (a: Point, b: Point): number => 
   Math.sqrt(
-    Math.pow(Math.abs(a.coords[0] - b.coords[0]), 2)
-    + Math.pow(Math.abs(a.coords[1] - b.coords[1]), 2)
-    + Math.pow(Math.abs(a.coords[2] - b.coords[2]), 2)
+      Math.pow(a.coords[0] - b.coords[0], 2)
+    + Math.pow(a.coords[1] - b.coords[1], 2)
+    + Math.pow(a.coords[2] - b.coords[2], 2)
   );
 
 function part1(data: Point[], maxPairs = 1000) {
-  const distances = data
-    .map((p1, i) => data
-      .filter((p2, j) => i < j &&  p1 !== p2)
-      .map(p2 => ({
-        p1,
-        p2,
-        estimate: distance(p1, p2)
-      })))
-    .flat()
-    .toSorted((a, b) => a.estimate - b.estimate);
+  const distances = [] as { p1: Point, p2: Point, distance: number }[];
+  for (let i = 0; i < data.length; i++) {
+    for (let j = i + 1; j < data.length; j++) {
+      distances.push({
+        p1: data[i]!,
+        p2: data[j]!,
+        distance: getDistanceBetween(data[i]!, data[j]!),
+      });
+    }
+  }
+  distances.sort((a, b) => a.distance - b.distance);
 
   const map = data.reduce((acc, next) => {
     acc[next.key] = new Set<string>([next.key]);
@@ -66,6 +67,7 @@ function part1(data: Point[], maxPairs = 1000) {
   }, { } as Record<string, Set<string>>)
 
   for (let i = 0; i < maxPairs; i++) {
+    if (i > distances.length - 1) break;
     const {p1, p2} = distances[i]!;
     const union = new Set([...map[p1.key]!, ...map[p2.key]!]);
     for (const key of union) {
@@ -73,8 +75,9 @@ function part1(data: Point[], maxPairs = 1000) {
     }
   }
 
-  const circuits = [...new Set(Object.values(map))].map(x => x.size).toSorted()
-  return circuits.pop()! * circuits.pop()! * circuits.pop()!;
+  const circuits = [...new Set(Object.values(map))].map(x => x.size).toSorted();
+  // console.log(circuits.slice(-10))
+  return circuits.slice(-3).reduce((a, b) => a * b, 1 as number);
 }
 
 function part2(data: any) {

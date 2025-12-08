@@ -76,7 +76,7 @@ function part1(data: Point[], maxPairs = 1000) {
   }
 
   const circuits = [...new Set(Object.values(map))].map(x => x.size).toSorted();
-  // console.log(circuits.slice(-10))
+  console.log(circuits.slice(-10))
   return circuits.slice(-3).reduce((a, b) => a * b, 1 as number);
 }
 
@@ -95,7 +95,8 @@ describe(`${day}`, async () => {
 
   it("should solve part 1", () => {
     const result = part1(parseInput(input));
-    expect(result).toBeGreaterThan(729);
+    expect(result).toBeGreaterThan(729); // current solution
+    expect(result).toBeGreaterThan(810); // wild guess with 10*9*9
     expect(result).toEqual(-1);
   });
 

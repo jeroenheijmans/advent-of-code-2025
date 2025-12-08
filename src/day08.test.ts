@@ -80,9 +80,38 @@ function part1(data: Point[], maxPairs = 1000) {
   return circuits.slice(-3).reduce((a, b) => a * b, 1 as number);
 }
 
-function part2(data: any) {
-  let answer = 0;
-  return answer;
+function part2(data: Point[]) {
+  const distances = [] as { p1: Point, p2: Point, distance: number }[];
+  for (let i = 0; i < data.length; i++) {
+    for (let j = i + 1; j < data.length; j++) {
+      distances.push({
+        p1: data[i]!,
+        p2: data[j]!,
+        distance: getDistanceBetween(data[i]!, data[j]!),
+      });
+    }
+  }
+  distances.sort((a, b) => a.distance - b.distance);
+
+  const map = data.reduce((acc, next) => {
+    acc[next.key] = new Set<string>([next.key]);
+    return acc;
+  }, { } as Record<string, Set<string>>)
+
+  for (let i = 0; i < distances.length; i++) {
+    if (i > distances.length - 1) break;
+    const {p1, p2} = distances[i]!;
+    const union = new Set([...map[p1.key]!, ...map[p2.key]!]);
+    for (const key of union) {
+      map[key] = union;
+    }
+    if (union.size === data.length) {
+      return p1.coords[0] * p2.coords[0];
+    }
+  }
+
+  const circuits = [...new Set(Object.values(map))].map(x => x.size).toSorted((a, b) => a - b);
+  return circuits.slice(-3).reduce((a, b) => a * b, 1 as number);
 }
 
 describe(`${day}`, async () => {
@@ -100,13 +129,13 @@ describe(`${day}`, async () => {
     expect(result).toEqual(122636);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 1)", () => {
+    const result = part2(parseInput(example1));
+    expect(result).toEqual(25272);
+  });
 
-  // it("should solve part 2", () => {
-  //   const result = part2(parseInput(input));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2", () => {
+    const result = part2(parseInput(input));
+    expect(result).toEqual(9271575747);
+  });
 });

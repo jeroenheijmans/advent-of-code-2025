@@ -28,17 +28,18 @@ function parseInput(input: string) {
   return input
     .split(/\r?\n/gi)
     .filter((x) => !!x)
-    .toSorted()
     .map((x) => x.split(",").map(n => parseInt(n)))
-    .map(coords => ({
+    .map((coords, y) => ({
       key: `${coords[0]!};${coords[1]!};${coords[2]!}`,
-      coords
+      coords,
+      y,
     } as Point));
 }
 
 type Point = {
   key: string;
   coords: [number, number, number];
+  y: number;
 };
 
 const getDistanceBetween = (a: Point, b: Point): number => 
@@ -75,8 +76,7 @@ function part1(data: Point[], maxPairs = 1000) {
     }
   }
 
-  const circuits = [...new Set(Object.values(map))].map(x => x.size).toSorted();
-  console.log(circuits.slice(-10))
+  const circuits = [...new Set(Object.values(map))].map(x => x.size).toSorted((a, b) => a - b);
   return circuits.slice(-3).reduce((a, b) => a * b, 1 as number);
 }
 
@@ -97,7 +97,7 @@ describe(`${day}`, async () => {
     const result = part1(parseInput(input));
     expect(result).toBeGreaterThan(729); // current solution
     expect(result).toBeGreaterThan(810); // wild guess with 10*9*9
-    expect(result).toEqual(-1);
+    expect(result).toEqual(122636);
   });
 
   // it("should solve part 2 (example 1)", () => {

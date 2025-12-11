@@ -14,6 +14,21 @@ ggg: out
 hhh: ccc fff iii
 iii: out`;
 
+const example2 = `
+svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out`;
+
 function parseInput(input: string) {
   return input
     .split(/\r?\n/gi)
@@ -28,32 +43,38 @@ function parseInput(input: string) {
 
 function part1(data: { from: string, to: string[], part1: number }[]) {
   let edges = [{ from: "out", to: [] as string[], part1: 1 }];
-  let i = 0;
 
   while (edges.length > 0) {
-    // console.log(data);
-    if (i++ > 70) break;
-    // console.log(data.filter(n => n.to.length === 0).length);
-
     for (const edge of edges) {
       const origins = data.filter(n => n.to.includes(edge.from));
-      // console.log(`Considering ${origins.map(o => o.from).join(",")}`)
       for (const origin of origins) {
         origin.to = origin.to.filter(key => key !== edge.from)
         origin.part1 += edge.part1;
       }
     }
     edges = data.filter(n => n.to.length === 0);
-
     if (data.every(n => n.to.length === 0)) break;
   }
 
   return data.find(n => n.from === "you")?.part1;
 }
 
-function part2(data: { from: string, to: string[] }[]) {
-  let answer = 0;
-  return answer;
+function part2(data: { from: string, to: string[], part1: number }[]) {
+  let edges = [{ from: "out", to: [] as string[], part1: 1 }];
+
+  while (edges.length > 0) {
+    for (const edge of edges) {
+      const origins = data.filter(n => n.to.includes(edge.from));
+      for (const origin of origins) {
+        origin.to = origin.to.filter(key => key !== edge.from)
+        origin.part1 += edge.part1;
+      }
+    }
+    edges = data.filter(n => n.to.length === 0);
+    if (data.every(n => n.to.length === 0)) break;
+  }
+
+  return data.find(n => n.from === "svr")?.part1;
 }
 
 describe(`${day}`, async () => {
@@ -66,13 +87,13 @@ describe(`${day}`, async () => {
 
   it("should solve part 1", () => {
     const result = part1(parseInput(input));
-    expect(result).toEqual(-1);
+    expect(result).toEqual(764);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 2)", () => {
+    const result = part2(parseInput(example2));
+    expect(result).toEqual(2);
+  });
 
   // it("should solve part 2", () => {
   //   const result = part2(parseInput(input));

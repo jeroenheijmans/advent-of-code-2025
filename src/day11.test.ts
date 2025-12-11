@@ -64,32 +64,50 @@ function part1(data: Data[]) {
 function findPath(data: Data[], from: string, to: string) {
   let edges = [{ from: to, to: [] as string[], part1: 1 }];
   let i = 0;
-  const maxIter = 500;
-
+  const maxIter = 5000;
+  // console.log(from, "=>", to);
+  
   while (edges.length > 0) {
     if (i++ > maxIter) break;
-    let hasSomethingChanged = false;
+    let isBlocking = true;
     for (const edge of edges) {
       const origins = data.filter(n => n.to.includes(edge.from));
       for (const origin of origins) {
         origin.to = origin.to.filter(key => key !== edge.from)
         origin.part1 += edge.part1;
-        hasSomethingChanged = true;
+        isBlocking = false;
       }
-    }
-    if (!hasSomethingChanged) {
-      data.filter(n => n.part1 > 0).forEach(n => n.to = []); // Prune dead branches
     }
     edges = data.filter(n => n.to.length === 0);
     if (data.every(n => n.to.length === 0)) break;
+
+    if (isBlocking) {
+      // Hack incoming, and I don't even know exactly why it works
+      // or if it always works. But We'll just sort and pick the
+      // smallest possible edge to prune, hoping the graph then
+      // kills off the right branch to get to the right answer.
+      const edges = [
+        data
+          .filter(n => n.part1 > 0)
+          .toSorted((a, b) => a.to.length - b.to.length)
+          .map(n => n.to)
+          .flat()
+          [0]
+      ];
+      while (edges.length > 0) {
+        const next = edges.pop();
+        data.forEach(n => n.to = n.to.filter(x => x !== next))
+        data.find(n => n.from === next)?.to.forEach(x => edges.push(x));
+        data = data.filter(n => n.from !== next);
+      }
+    }
   }
 
   const result = data.find(n => n.from === from)?.part1;
 
-  // console.log(from, "=>", to, result);
   // if (from === "fft" && to === "dac") console.log(data)
 
-  return result!;
+  return result! || 0;
 }
 
 const clone = (data: Data[]) => JSON.parse(JSON.stringify(data)) as Data[];
@@ -104,6 +122,9 @@ function part2(data: Data[]) {
 
   const route1 = svr_to_dac * dac_to_fft * fft_to_out;
   const route2 = svr_to_fft * fft_to_dac * dac_to_out;
+
+  // console.log(route1)
+  // console.log(route2)
 
   return route1 + route2;
 }
@@ -129,6 +150,7 @@ describe(`${day}`, async () => {
   it("should solve part 2", () => {
     const result = part2(parseInput(input));
     expect(result).toBeGreaterThan(1788386808600);
-    expect(result).toEqual(-1);
+    expect(result).toBeGreaterThan(29951400247740);
+    expect(result).toEqual(462444153119850);
   });
 });

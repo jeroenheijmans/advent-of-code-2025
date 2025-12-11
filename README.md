@@ -31,21 +31,8 @@ Here's what I learned (or noticed) each day.
 8. JavaScript sorting goes d9rp d9rp...
 9. TODO
 10. TODO
-11. TODO
+11. Sometimes only results matter.
 12. TODO
-13. TODO
-14. TODO
-15. TODO
-16. TODO
-17. TODO
-18. TODO
-19. TODO
-20. TODO
-21. TODO
-22. TODO
-23. TODO
-24. TODO
-25. TODO
 
 ## Compendium Repositories
 

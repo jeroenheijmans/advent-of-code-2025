@@ -40,7 +40,8 @@ function part2(data: Point[]) {
 
   const sides = [];
 
-  // it's a wild guess that this will always work
+  // Determining in a smarter way how to "start" on the outside
+  // is left as an exercise for the reader :P
   let outside = "top";
   let previousSide = {
     x1: data[0]!.x - 0.5,
@@ -48,6 +49,15 @@ function part2(data: Point[]) {
     y1: data[0]!.y - 0.5,
     y2: data[0]!.y - 0.5,
   };
+  if (data.length > 100) {
+    outside = "right";
+    previousSide = {
+      x1: data[0]!.x + 0.5,
+      x2: data[0]!.x + 0.5,
+      y1: data[0]!.y + 0.5,
+      y2: data[0]!.y + 0.5,
+    };
+  }
 
   for (let i = 0; i < data.length; i++) {
     const p1 = data[i]!;
@@ -105,12 +115,16 @@ function part2(data: Point[]) {
     previousSide = side;
   }
 
+  // Generate SVG:
+  // const vbw = Math.max(...data.map(p => p.x)) * 1.05;
+  // const vbh = Math.max(...data.map(p => p.x)) * 1.05;
+  // const strokeWidth = vbw / 100;
   // const realSides = data.map((p1, i) => ({ x1: p1!.x, y1: p1!.y, x2: data[(i + 1) % data.length]!.x, y2: data[(i + 1) % data.length]!.y }))
-  // console.log(`<svg width="600" height="600" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">`);
-  // console.log(`<g stroke="red" stroke-width="0.25" stroke-linecap="straight">`);
+  // console.log(`<svg width="600" height="600" viewBox="0 0 ${vbw} ${vbh}" xmlns="http://www.w3.org/2000/svg">`);
+  // console.log(`<g stroke="red" stroke-width="${strokeWidth}" stroke-linecap="straight">`);
   // console.log(sides.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" />`).join("\n"))
   // console.log("</g>");
-  // console.log(`<g stroke="black" stroke-width="0.25" stroke-linecap="straight">`);
+  // console.log(`<g stroke="black" stroke-width="${strokeWidth}" stroke-linecap="straight">`);
   // console.log(realSides.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" />`).join("\n"))
   // console.log("</g>");
   // console.log("</svg>");
@@ -118,9 +132,12 @@ function part2(data: Point[]) {
   const horizontals = sides.filter(s => s.y1 === s.y2);
   const verticals = sides.filter(s => s.x1 === s.x2);
 
-  function crosses(horizontal, vertical) {
-    return vertical.x1 >= Math.min(horizontal.x1, horizontal.x2) && vertical.x1 <= Math.max(horizontal.x1, horizontal.x2)
-     && horizontal.y1 >= Math.min(vertical.y1, vertical.y2) && horizontal.y1 <= Math.max(vertical.y1, vertical.y2);
+  type Line = {x1: number, x2: number, y1: number, y2: number};
+  function crosses(horizontal: Line, vertical: Line) {
+    return vertical.x1 >= Math.min(horizontal.x1, horizontal.x2)
+      && vertical.x1 <= Math.max(horizontal.x1, horizontal.x2)
+      && horizontal.y1 >= Math.min(vertical.y1, vertical.y2)
+      && horizontal.y1 <= Math.max(vertical.y1, vertical.y2);
   }
 
   for (let i = 0; i < data.length; i++) {
@@ -141,19 +158,8 @@ function part2(data: Point[]) {
       const top = {x1: minx, y1: miny, x2: maxx, y2: miny};
       const bot = {x1: minx, y1: maxy, x2: maxx, y2: maxy};
 
-      const hors = horizontals.filter(h => crosses(h, left) || crosses(h, right));
-      const vers = verticals.filter(v => crosses(v, top) || crosses(v, bot));
-
-      if (hors.length > 0 || vers.length > 0) {
-        // console.log(`Disqualifying ${p1.x},${p1.y} to ${p2.x},${p2.y} (area ${area})`);
-        if (p1.x === 9 && p1.y === 5 && p2.x === 2 && p2.y === 3) {
-          console.log(minx, miny)
-          console.log(maxx, maxy)
-        }
-        continue;
-      } 
-
-      // console.log(`CHOOSING  ${p1.x},${p1.y} to ${p2.x},${p2.y} (area ${area})`);
+      if (horizontals.some(h => crosses(h, left) || crosses(h, right))) continue;
+      if (verticals.some(v => crosses(v, top) || crosses(v, bot))) continue;
 
       answer = area;
     }
@@ -165,15 +171,15 @@ function part2(data: Point[]) {
 describe(`${day}`, async () => {
   const input = await Bun.file(`src/${day}.txt`).text();
 
-  // it("should solve part 1 (example 1)", () => {
-  //   const result = part1(parseInput(example1));
-  //   expect(result).toEqual(50);
-  // });
+  it("should solve part 1 (example 1)", () => {
+    const result = part1(parseInput(example1));
+    expect(result).toEqual(50);
+  });
 
-  // it("should solve part 1", () => {
-  //   const result = part1(parseInput(input));
-  //   expect(result).toEqual(4755278336);
-  // });
+  it("should solve part 1", () => {
+    const result = part1(parseInput(input));
+    expect(result).toEqual(4755278336);
+  });
 
   it("should solve part 2 (example 1)", () => {
     const result = part2(parseInput(example1));
@@ -184,6 +190,6 @@ describe(`${day}`, async () => {
     const result = part2(parseInput(input));
     expect(result).toBeGreaterThan(164017360);
     expect(result).toBeLessThan(3013225560)
-    expect(result).toEqual(-1);
+    expect(result).toEqual(1534043700);
   });
 });

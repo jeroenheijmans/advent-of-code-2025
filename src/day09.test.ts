@@ -105,15 +105,59 @@ function part2(data: Point[]) {
     previousSide = side;
   }
 
-  const realSides = data.map((p1, i) => ({ x1: p1!.x, y1: p1!.y, x2: data[(i + 1) % data.length]!.x, y2: data[(i + 1) % data.length]!.y }))
-  console.log(`<svg width="600" height="600" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">`);
-  console.log(`<g stroke="red" stroke-width="0.25" stroke-linecap="straight">`);
-  console.log(sides.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" />`).join("\n"))
-  console.log("</g>");
-  console.log(`<g stroke="black" stroke-width="0.25" stroke-linecap="straight">`);
-  console.log(realSides.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" />`).join("\n"))
-  console.log("</g>");
-  console.log("</svg>");
+  // const realSides = data.map((p1, i) => ({ x1: p1!.x, y1: p1!.y, x2: data[(i + 1) % data.length]!.x, y2: data[(i + 1) % data.length]!.y }))
+  // console.log(`<svg width="600" height="600" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">`);
+  // console.log(`<g stroke="red" stroke-width="0.25" stroke-linecap="straight">`);
+  // console.log(sides.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" />`).join("\n"))
+  // console.log("</g>");
+  // console.log(`<g stroke="black" stroke-width="0.25" stroke-linecap="straight">`);
+  // console.log(realSides.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" />`).join("\n"))
+  // console.log("</g>");
+  // console.log("</svg>");
+
+  const horizontals = sides.filter(s => s.y1 === s.y2);
+  const verticals = sides.filter(s => s.x1 === s.x2);
+
+  function crosses(horizontal, vertical) {
+    return vertical.x1 >= Math.min(horizontal.x1, horizontal.x2) && vertical.x1 <= Math.max(horizontal.x1, horizontal.x2)
+     && horizontal.y1 >= Math.min(vertical.y1, vertical.y2) && horizontal.y1 <= Math.max(vertical.y1, vertical.y2);
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    for (let j = i + 1; j < data.length; j++) {
+      const p1 = data[i]!;
+      const p2 = data[j]!;
+      const area = (Math.abs(p1.x - p2.x) + 1) * (Math.abs(p1.y - p2.y) + 1);
+
+      if (area < answer) continue;
+      
+      const minx = Math.min(p1.x, p2.x);
+      const miny = Math.min(p1.y, p2.y);
+      const maxx = Math.max(p1.x, p2.x);
+      const maxy = Math.max(p1.y, p2.y);
+      
+      const left = {x1: minx, y1: miny, x2: minx, y2: maxy};
+      const right = {x1: maxx, y1: miny, x2: maxx, y2: maxy};
+      const top = {x1: minx, y1: miny, x2: maxx, y2: miny};
+      const bot = {x1: minx, y1: maxy, x2: maxx, y2: maxy};
+
+      const hors = horizontals.filter(h => crosses(h, left) || crosses(h, right));
+      const vers = verticals.filter(v => crosses(v, top) || crosses(v, bot));
+
+      if (hors.length > 0 || vers.length > 0) {
+        // console.log(`Disqualifying ${p1.x},${p1.y} to ${p2.x},${p2.y} (area ${area})`);
+        if (p1.x === 9 && p1.y === 5 && p2.x === 2 && p2.y === 3) {
+          console.log(minx, miny)
+          console.log(maxx, maxy)
+        }
+        continue;
+      } 
+
+      // console.log(`CHOOSING  ${p1.x},${p1.y} to ${p2.x},${p2.y} (area ${area})`);
+
+      answer = area;
+    }
+  }
 
   return answer;
 }
@@ -136,9 +180,10 @@ describe(`${day}`, async () => {
     expect(result).toEqual(24);
   });
 
-  // it("should solve part 2", () => {
-  //   const result = part2(parseInput(input));
-  //   expect(result).toBeGreaterThan(164017360);
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2", () => {
+    const result = part2(parseInput(input));
+    expect(result).toBeGreaterThan(164017360);
+    expect(result).toBeLessThan(3013225560)
+    expect(result).toEqual(-1);
+  });
 });

@@ -29,7 +29,7 @@ Here's what I learned (or noticed) each day.
 6. Sometimes things are just different.
 7. Experience with **chess** being useful. Nice!
 8. JavaScript sorting goes d9rp d9rp...
-9. TODO
+9. Visualize debug info if needed!
 10. TODO
 11. Sometimes only results matter.
 12. TODO

@@ -21,7 +21,7 @@ function parseInput(input: string) {
     }));
 }
 
-function part1(data: {lights: string, wirings: string[], joltages: number[]}[]) {
+function part1(data: {lights: string, wirings: string[]}[]) {
   let answer = 0;
 
   data.forEach(line => {
@@ -54,8 +54,42 @@ function part1(data: {lights: string, wirings: string[], joltages: number[]}[]) 
   return answer;
 }
 
-function part2(data: any) {
+function part2(data: {wirings: string[], joltages: number[]}[]) {
   let answer = 0;
+
+  data.forEach(line => {
+    // console.log(line);
+    const target = line!.joltages;
+    const buttons = line!.wirings.map(w => new Set(w.split(",").map(n => parseInt(n))));
+    
+    function findFewestPresses() {
+      let states = [target.map(_ => 0)];
+      let i = 0;
+      let seen = new Set<string>();
+      while (i++ < 1e6) {
+        // if (i % 1e4) console.log(i, "size", seen.size);
+        let newStates = [] as number[][];
+        for (const state of states) {
+          const key = state.join(",");
+          if (seen.has(key)) continue;
+          seen.add(key);
+          for (const button of buttons) {
+            let newState = [];
+            for (let idx = 0; idx < state.length; idx++) {
+              newState.push(state[idx]! + (button.has(idx) ? 1 : 0));
+            }
+            if (newState.every((j, idx) => j === target[idx])) return i;
+            newStates.push(newState);
+          }
+        }
+        states = newStates;
+      }
+
+      throw Error("No solution found!?");
+    }
+    answer += findFewestPresses();
+  });
+
   return answer;
 }
 

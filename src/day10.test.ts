@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import * as solver from "javascript-lp-solver";
 
 const day = "day10";
 
@@ -69,6 +70,8 @@ function part1(data: {lights: string, wirings: string[]}[]) {
 //     5 = B + F
 //     4 = C + D + E
 //     7 = A + B + D
+//
+// This requires some kind of solver for systems of equations involving integers.
 
 function part2(data: {wirings: string[], joltages: number[]}[]) {
   let answer = 0;
@@ -86,7 +89,28 @@ function part2(data: {wirings: string[], joltages: number[]}[]) {
       maximumPressesPerButtonIndex.push(maxNrOfPresses);
     }
 
-    console.log(maximumPressesPerButtonIndex)
+    const model = {
+      optimize: "total",
+      optType: "min",
+      constraints: joltages.reduce((result, joltage, i) => {
+        result[`eq${i}`] = { equal: joltage };
+        return result;
+      }, {} as Record<string, {equal: number}>),
+      variables: buttons.reduce((result, button, i) => {
+        result[`button${i}`] = joltages.reduce((line, joltage, j) => {
+          line[`eq${j}`] = button.includes(j) ? 1 : 0;
+          return line;
+        }, { total: 1 } as Record<string, number>);
+        return result;
+      }, {} as Record<string, Record<string, number>>),
+      ints: buttons.reduce((result, button, i) => {
+        result[`button${i}`] = 1;
+        return result;
+      }, {} as Record<string, number>),
+    };
+
+    const result = solver.Solve(model);
+    answer += result.result;
   });
 
   return answer;
@@ -110,8 +134,8 @@ describe(`${day}`, async () => {
     expect(result).toEqual(33);
   });
 
-  // it("should solve part 2", () => {
-  //   const result = part2(parseInput(input));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2", () => {
+    const result = part2(parseInput(input));
+    expect(result).toEqual(20142);
+  });
 });

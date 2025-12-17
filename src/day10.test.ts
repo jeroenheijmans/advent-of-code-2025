@@ -54,40 +54,39 @@ function part1(data: {lights: string, wirings: string[]}[]) {
   return answer;
 }
 
+// Example
+//
+//     A (0,0,0,1) -- (3)
+//     B (0,1,0,1) -- (1,3)
+//     C (0,0,1,0) -- (2)
+//     D (0,0,1,1) -- (2,3)
+//     E (1,0,1,0) -- (0,2)
+//     F (1,1,0,0) -- (0,1)
+//    
+//       {3,5,4,7}
+//    
+//     3 = E + F
+//     5 = B + F
+//     4 = C + D + E
+//     7 = A + B + D
+
 function part2(data: {wirings: string[], joltages: number[]}[]) {
   let answer = 0;
 
   data.forEach(line => {
-    // console.log(line);
-    const target = line!.joltages;
-    const buttons = line!.wirings.map(w => new Set(w.split(",").map(n => parseInt(n))));
-    
-    function findFewestPresses() {
-      let states = [target.map(_ => 0)];
-      let i = 0;
-      let seen = new Set<string>();
-      while (i++ < 1e6) {
-        // if (i % 1e4) console.log(i, "size", seen.size);
-        let newStates = [] as number[][];
-        for (const state of states) {
-          const key = state.join(",");
-          if (seen.has(key)) continue;
-          seen.add(key);
-          for (const button of buttons) {
-            let newState = [];
-            for (let idx = 0; idx < state.length; idx++) {
-              newState.push(state[idx]! + (button.has(idx) ? 1 : 0));
-            }
-            if (newState.every((j, idx) => j === target[idx])) return i;
-            newStates.push(newState);
-          }
-        }
-        states = newStates;
-      }
+    const joltages = line!.joltages;
+    const buttons = line!.wirings.map(w => w.split(",").map(n => parseInt(n)));
 
-      throw Error("No solution found!?");
+    const maximumPressesPerButtonIndex = [];
+    for (const button of buttons) {
+      let maxNrOfPresses = Number.MAX_SAFE_INTEGER;
+      for (let idx = 0; idx < joltages.length; idx++) {
+        if (button.includes(idx)) maxNrOfPresses = Math.min(maxNrOfPresses, joltages[idx]!);
+      }
+      maximumPressesPerButtonIndex.push(maxNrOfPresses);
     }
-    answer += findFewestPresses();
+
+    console.log(maximumPressesPerButtonIndex)
   });
 
   return answer;

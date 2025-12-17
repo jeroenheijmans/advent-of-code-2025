@@ -32,7 +32,7 @@ Here's what I learned (or noticed) each day.
 9. Visualize debug info if needed!
 10. At least I knew what kind of solver I needed?
 11. Sometimes only results matter.
-12. TODO
+12. Wow! o.O
 
 ## Compendium Repositories
 

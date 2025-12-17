@@ -31,26 +31,21 @@ function part1(data: {lights: string, wirings: string[], joltages: number[]}[]) 
       .reduce((acc, pos) => acc | (1 << Number(pos)), 0)
     );
 
-    // console.log("Searching", target)
-
     function findFewestPresses() {
       let states = new Set([0]);
       let i = 0;
-      while (i++ < 10) {
-        // console.log(i, states.size);
+      while (i++ < 1e6) {
         let newStates = new Set<number>();
         for (const state of states) {
           for (const button of buttons) {
             let newState = state ^ button;
-            // if (newState === target) console.log("Found it!", i);
             if (newState === target) return i;
             newStates.add(newState);
           }
         }
         states = newStates;
-        // console.log([...states])
       }
-      return -1e12;
+      throw Error("No solution found!?");
     }
 
     answer += findFewestPresses();
@@ -77,10 +72,10 @@ describe(`${day}`, async () => {
     expect(result).toEqual(481);
   });
 
-  // it("should solve part 2 (example 1)", () => {
-  //   const result = part2(parseInput(example1));
-  //   expect(result).toEqual(-1);
-  // });
+  it("should solve part 2 (example 1)", () => {
+    const result = part2(parseInput(example1));
+    expect(result).toEqual(33);
+  });
 
   // it("should solve part 2", () => {
   //   const result = part2(parseInput(input));
